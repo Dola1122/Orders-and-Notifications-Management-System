@@ -1,7 +1,7 @@
 # Read Me First
 The following was discovered as part of building this project:
 
-* The original package name 'com.example.software.assignment.2' is invalid and this project uses 'com.example.software.assignment2' instead.
+* The original package name 'com.example.software-assignment-2' is invalid and this project uses 'com.example.softwareassignment2' instead.
 
 # Getting Started
 
@@ -12,6 +12,7 @@ For further reference, please consider the following sections:
 * [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/3.2.1/maven-plugin/reference/html/)
 * [Create an OCI image](https://docs.spring.io/spring-boot/docs/3.2.1/maven-plugin/reference/html/#build-image)
 * [Spring Web](https://docs.spring.io/spring-boot/docs/3.2.1/reference/htmlsingle/index.html#web)
+* [Spring Boot DevTools](https://docs.spring.io/spring-boot/docs/3.2.1/reference/htmlsingle/index.html#using.devtools)
 
 ### Guides
 The following guides illustrate how to use some features concretely:
