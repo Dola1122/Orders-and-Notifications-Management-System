@@ -18,6 +18,7 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
+    // create new order
     @PostMapping()
     public HashMap<String, Order> placeOrder(@RequestBody OrderRequest orderRequest){
         // json object should look like
@@ -46,4 +47,19 @@ public class OrderController {
         orderDetails.put("orderDetails", createdOrder);
         return orderDetails;
     }
+
+    // list all orders
+    @GetMapping()
+    public List<Order> getAllOrders(){
+        List<Order> orders = orderService.getAllOrders();
+        // no orders yet
+        if(orders == null){
+            System.out.println("No orders yet");
+            return null;
+        }else{
+            return orderService.getAllOrders();
+        }
+    }
+
+
 }

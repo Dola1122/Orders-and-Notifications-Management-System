@@ -22,6 +22,13 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
+
+    public List<Order> getAllOrders(){
+        return orderRepository.getAllOrders();
+    }
+
+
+
     public Order placeOrder(OrderRequest orderRequest){
 
         int customerID = orderRequest.getCustomerID();

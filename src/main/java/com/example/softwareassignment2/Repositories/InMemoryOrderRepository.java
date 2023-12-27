@@ -28,7 +28,7 @@ public class InMemoryOrderRepository implements OrderRepository {
 
     @Override
     public List<Order> getAllOrders() {
-        return null;
+        return orders;
     }
 
 
