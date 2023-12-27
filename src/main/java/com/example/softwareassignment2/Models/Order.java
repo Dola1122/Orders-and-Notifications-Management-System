@@ -6,6 +6,9 @@ import lombok.*;
 @AllArgsConstructor
 @Setter
 @Getter
-public class Order {
+public abstract class Order {
     private int orderID;
+
+
+    public abstract boolean placeOrder();
 }

@@ -8,11 +8,13 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="software-assignment-2" />
+        <module name="Orders-and-Notifications-Management-System" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Orders-and-Notifications-Management-System" options="-parameters" />
       <module name="software-assignment-2" options="-parameters" />
     </option>
   </component>

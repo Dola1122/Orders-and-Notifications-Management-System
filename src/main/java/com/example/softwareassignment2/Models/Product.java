@@ -16,5 +16,6 @@ public class Product {
     private String vendor;
     private String category;
     private double price;
-    private int remainingParts;
+
+    private int quantity;
 }
