@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public class InMemoryOrderRepository implements OrderRepository {
 
-    private static final List<Product> orders = new ArrayList<>();
+    private static final List<Order> orders = new ArrayList<>();
     @Override
     public Order addOrder(List<Product> products, int customerID) {
         SimpleOrder newOrder = new SimpleOrder();
@@ -22,7 +22,7 @@ public class InMemoryOrderRepository implements OrderRepository {
         newOrder.setOrderID(orders.size() + 1);
         newOrder.setProducts(orderProducts);
         newOrder.setCustomerID(customerID);
-
+        orders.add(newOrder);
         return newOrder;
     }
 

@@ -26,6 +26,8 @@ public class OrderService {
 
         int customerID = orderRequest.getCustomerID();
         List<Product> products = new ArrayList<>();
+
+        double totalOrderPrice = 0;
         for (ProductRequest productRequest : orderRequest.getProducts()) {
             Product product = productService.getProductBySerialNumber(productRequest.getSerialNumber());
             if(product != null){
@@ -33,6 +35,7 @@ public class OrderService {
                 System.out.println(product.getSerialNumber());
                 // product.setOrder(order);
                 products.add(product);
+                totalOrderPrice += product.getQuantity() * product.getPrice();
             }else {
                 System.out.println("Product doesn't exist");
             }
@@ -41,7 +44,7 @@ public class OrderService {
         // make and order with sent products and customer id
         Order createdOrder = orderRepository.addOrder(products, customerID);
 
-
+        createdOrder.setOrderPrice(totalOrderPrice);
         return createdOrder;
     }
 }

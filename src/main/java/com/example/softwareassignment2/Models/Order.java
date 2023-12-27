@@ -9,6 +9,7 @@ import lombok.*;
 public abstract class Order {
     private int orderID;
 
+    private double orderPrice;
 
-    public abstract boolean placeOrder();
+
 }

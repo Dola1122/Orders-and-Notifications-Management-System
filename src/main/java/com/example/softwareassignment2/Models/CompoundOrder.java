@@ -10,8 +10,5 @@ import java.util.List;
 public class CompoundOrder extends Order{
     private List<SimpleOrder> simpleOrders;
 
-    @Override
-    public boolean placeOrder() {
-        return false;
-    }
+
 }

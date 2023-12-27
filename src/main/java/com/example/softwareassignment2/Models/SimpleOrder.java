@@ -10,11 +10,7 @@ import java.util.List;
 public class SimpleOrder extends Order{
     private List<Product> products;
     private int customerID;
-    private double orderPrice;
     private String shippingAddress;
 
-    @Override
-    public boolean placeOrder() {
-        return false;
-    }
+
 }
