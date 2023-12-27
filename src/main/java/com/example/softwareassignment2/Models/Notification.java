@@ -7,8 +7,7 @@ import lombok.*;
 @Setter
 @Getter
 public class Notification {
-    private NotificationTemplate notificationTemplate;
+//    private NotificationTemplate notificationTemplate;
     private int notificationID;
-    private Customer customer;
     private String actualContent;
 }

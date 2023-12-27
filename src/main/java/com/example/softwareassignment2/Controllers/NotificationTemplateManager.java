@@ -14,7 +14,6 @@ import java.util.Map;
 
 public class NotificationTemplateManager {
     private final Map<NotificationType, NotificationTemplate> notificationTemplates;
-
     public NotificationTemplateManager(){
         this.notificationTemplates = new HashMap<>();
         int typesSize = NotificationType.values().length;
@@ -22,7 +21,7 @@ public class NotificationTemplateManager {
         for(int i = 0; i < typesSize; i++){
             notificationTemplates.put(NotificationType.values()[i],new NotificationTemplate());
         }
-
+//violate open close principles(Factory method)
         for (Map.Entry<NotificationType, NotificationTemplate> entry : notificationTemplates.entrySet()) {
             if (entry.getKey() == NotificationType.ORDER_PLACEMENT){
                 entry.setValue(new NotificationOrderPlacementTemplate());

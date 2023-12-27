@@ -6,23 +6,22 @@ import java.util.List;
 public class NotificationOrderPlacementTemplate extends NotificationTemplate {
     public NotificationOrderPlacementTemplate(){
         List<String> placeholders = new ArrayList<>();
-        placeholders.add("");
-        placeholders.add("");
-        placeholders.add("");
+        placeholders.add("{Customer name}");
+        placeholders.add("{Products}");
 
         List<String> availableChannels = new ArrayList<>();
-        availableChannels.add("");
-        availableChannels.add("");
-        availableChannels.add("");
+        availableChannels.add("SMS");
+        availableChannels.add("Email");
+
 
         List<String> availableLanguages = new ArrayList<>();
-        availableLanguages.add("");
-        availableLanguages.add("");
-        availableLanguages.add("");
+        availableLanguages.add("Arabic");
+        availableLanguages.add("English");
+
 
         setNotificationType(NotificationType.ORDER_PLACEMENT);
         setSubject("Order Placement");
-        setContent("");
+        setContent(" Dear {Customer name} , your booking of the {Products} is confirmed. thanks for using our store :) ");
         setPlaceholders(placeholders);
         setAvailableChannels(availableChannels);
         setAvailableLanguages(availableLanguages);
