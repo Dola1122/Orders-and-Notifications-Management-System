@@ -9,4 +9,6 @@ import java.util.List;
 @Getter
 public class CompoundOrder extends Order{
     private List<SimpleOrder> simpleOrders;
+
+
 }

@@ -8,8 +8,9 @@ import java.util.List;
 @Setter
 @Getter
 public class SimpleOrder extends Order{
-    private List<Integer> productsSerialNumber;
+    private List<Product> products;
     private int customerID;
-    private double orderPrice;
     private String shippingAddress;
+
+
 }
