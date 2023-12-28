@@ -17,9 +17,9 @@ public abstract class NotificationTemplate {
     protected List<String> placeholders;
 
     public NotificationTemplate(){
-        List<String> placeholders = new ArrayList<>();
-        List<String> availableChannels = new ArrayList<>();
-        List<String> availableLanguages = new ArrayList<>();
+        this.placeholders = new ArrayList<>();
+        this.availableChannels = new ArrayList<>();
+        this.availableLanguages = new ArrayList<>();
     }
 
 }

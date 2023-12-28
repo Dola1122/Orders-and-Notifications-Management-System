@@ -3,16 +3,17 @@ package com.example.softwareassignment2.Services;
 
 import com.example.softwareassignment2.DTO.OrderRequest;
 import com.example.softwareassignment2.DTO.ProductRequest;
+import com.example.softwareassignment2.Models.Customer;
+import com.example.softwareassignment2.Models.NotificationType;
 import com.example.softwareassignment2.Models.Order;
 import com.example.softwareassignment2.Models.Product;
-import com.example.softwareassignment2.Models.SimpleOrder;
+import com.example.softwareassignment2.Repositories.CustomerRepository;
 import com.example.softwareassignment2.Repositories.OrderRepository;
-import com.example.softwareassignment2.Repositories.ProductRepository;
+import com.example.softwareassignment2.Services.NotificationHandlers.NotificationSystem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -21,6 +22,10 @@ public class OrderService {
     private ProductService productService;
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
+    @Autowired
+    private NotificationSystem notificationSystem;
 
     public List<Order> getAllOrders(){
         return orderRepository.getAllOrders();
@@ -49,6 +54,16 @@ public class OrderService {
         Order createdOrder = orderRepository.addOrder(products, customerID);
 
         createdOrder.setOrderPrice(totalOrderPrice);
+
+        List<String> placeHolders = new ArrayList<>();
+        Customer customer = customerRepository.getCustomerByID(customerID);
+
+        placeHolders.add(customer.getUsername());
+        for(Product p : products){
+            placeHolders.add(p.getName());
+        }
+
+        notificationSystem.sendMessage(NotificationType.ORDER_PLACEMENT, placeHolders);
         return createdOrder;
     }
 }

@@ -8,4 +8,5 @@ public interface CustomerRepository {
     List<Customer> getAllCustomers();
     void addCustomer(Customer customer);
     Customer getCustomerByEmail(String email);
+    Customer getCustomerByID(int id);
 }

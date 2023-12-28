@@ -5,24 +5,19 @@ import com.example.softwareassignment2.Services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Queue;
 
 @RestController
+@RequestMapping("/notification")
 public class NotificationController {
-
+    @Autowired
     private NotificationService notificationService;
 
-    @GetMapping("/notifications")
+    @GetMapping("/allNotifications")
     public Queue<Notification> listAllNotifications(){
-
-        return null;
+            return notificationService.getAllNotifications();
     }
-
-    @GetMapping("{customerID}/notifications")
-    public Queue<Notification> listCustomerNotification(@PathVariable("customerID") int customerID){
-        return null;
-    }
-
 }

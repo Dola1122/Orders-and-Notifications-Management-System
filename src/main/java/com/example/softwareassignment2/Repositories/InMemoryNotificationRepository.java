@@ -7,17 +7,10 @@ import java.util.*;
 
 @Repository
 public class InMemoryNotificationRepository implements NotificationRepository {
-
-
-    private Queue<Notification> allNotifications;
-
-    public InMemoryNotificationRepository(){
-        allNotifications = new LinkedList<>();
-    }
-
+    private static final Queue<Notification> allNotifications = new LinkedList<>();
 
     @Override
-    public void saveNotification(int CustomerID, Notification notification) {
+    public void saveNotification(Notification notification) {
         allNotifications.add(notification);
     }
 
