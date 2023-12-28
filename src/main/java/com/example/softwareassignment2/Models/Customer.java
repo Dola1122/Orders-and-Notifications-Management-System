@@ -2,10 +2,13 @@ package com.example.softwareassignment2.Models;
 
 import lombok.*;
 
+import javax.persistence.*;
+
 @NoArgsConstructor
-@AllArgsConstructor
 @Setter
 @Getter
+@AllArgsConstructor
+@Entity
 public class Customer {
     private int customerID;
     private CustomerAccount customerAccount;
@@ -14,4 +17,6 @@ public class Customer {
     private String phoneNumber;
     private String email;
     private String address;
+
+
 }

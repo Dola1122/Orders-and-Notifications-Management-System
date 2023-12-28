@@ -23,5 +23,10 @@ public class ProductController {
         return Collections.singletonMap("products", products);
     }
 
+    @GetMapping("/categories")
+    public Map<String, Integer> getAllCategories() {
+        Map<String, Integer> categories = productService.getAllCategories();
+        return categories;
+    }
 
 }

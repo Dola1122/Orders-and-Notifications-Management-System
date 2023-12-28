@@ -2,9 +2,8 @@ package com.example.softwareassignment2.Repositories;
 
 import com.example.softwareassignment2.Models.Product;
 import org.springframework.stereotype.Repository;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+
+import java.util.*;
 
 @Repository
 public class InMemoryProductRepository implements ProductRepository {
@@ -25,5 +24,18 @@ public class InMemoryProductRepository implements ProductRepository {
             }
         }
         return null; // if
+    }
+
+    public Map<String, Integer> getAllCategories() {
+        Map<String, Integer> categoryCountMap = new HashMap<>();
+
+        for (Product p : products) {
+            String category = p.getCategory();
+
+            // Update the count for the category
+            categoryCountMap.put(category, categoryCountMap.getOrDefault(category, 0) + 1);
+        }
+
+        return categoryCountMap;
     }
 }
