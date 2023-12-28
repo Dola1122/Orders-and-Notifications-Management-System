@@ -6,5 +6,5 @@ import java.util.Queue;
 
 public interface NotificationRepository {
     public Queue<Notification> getAllNotifications();
-    public void saveNotification(int CustomerID, Notification notification);
+    public void saveNotification(Notification notification);
 }

@@ -21,23 +21,6 @@ public class OrderController {
     // create new order
     @PostMapping()
     public HashMap<String, Order> placeOrder(@RequestBody OrderRequest orderRequest){
-        // json object should look like
-        /*
-            {
-                "products" : [
-                    {
-                        "serialNumber" : "SN001",
-                        "quantity" : 1
-                    },
-                    {
-                        "serialNumber"  : "SN002",
-                        "quantity" : 2
-                    }
-
-                ],
-                "customerID" : 123
-            }
-        */
         HashMap<String, Order> orderDetails = new HashMap<>();
         for(ProductRequest pr : orderRequest.getProducts()){
             System.out.println(pr.getSerialNumber());

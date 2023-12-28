@@ -25,5 +25,11 @@ public class InMemoryCustomerRepository implements CustomerRepository {
                 .findFirst()
                 .orElse(null);
     }
+    public Customer getCustomerByID(int id) {
+        return customers.stream()
+                .filter(customer -> customer.getCustomerID() == id)
+                .findFirst()
+                .orElse(null);
+    }
 
 }
