@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ProductService {
@@ -18,7 +19,11 @@ public class ProductService {
     }
 
 
-    public Product getProductBySerialNumber(String serialNumber){
+    public Map<String, Integer> getAllCategories() {
+        return repository.getAllCategories();
+    }
+
+    public Product getProductBySerialNumber(String serialNumber) {
         // Product p;
         Product p = repository.getProductBySerialNumber(serialNumber);
         return p;
