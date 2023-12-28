@@ -12,5 +12,4 @@ public class SimpleOrder extends Order{
     private int customerID;
     private String shippingAddress;
 
-
 }

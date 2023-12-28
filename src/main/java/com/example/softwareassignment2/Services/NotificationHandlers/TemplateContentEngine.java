@@ -1,4 +1,4 @@
-package com.example.softwareassignment2.Controllers;
+package com.example.softwareassignment2.Services.NotificationHandlers;
 
 import java.util.List;
 
@@ -12,14 +12,4 @@ public class TemplateContentEngine {
         return template;
     }
 
-//
-//        for (Map.Entry<String, String> entry : values.entrySet()) {
-//            String placeholder = entry.getKey();
-//            String actualValue = entry.getValue();
-//            template = template.replace("{" + placeholder + "}", actualValue);
-//
-//        }
-//
-//        return template;
-//    }
 }
