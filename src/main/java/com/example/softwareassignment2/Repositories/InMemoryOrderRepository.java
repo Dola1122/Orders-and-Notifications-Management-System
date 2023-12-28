@@ -15,12 +15,9 @@ public class InMemoryOrderRepository implements OrderRepository {
     @Override
     public Order addOrder(List<Product> products, int customerID) {
         SimpleOrder newOrder = new SimpleOrder();
-        List<Product> orderProducts = new ArrayList<>();
-        for(Product p : products){
-            orderProducts.add(p);
-        }
+
         newOrder.setOrderID(orders.size() + 1);
-        newOrder.setProducts(orderProducts);
+        newOrder.setProducts(products);
         newOrder.setCustomerID(customerID);
         orders.add(newOrder);
         return newOrder;
