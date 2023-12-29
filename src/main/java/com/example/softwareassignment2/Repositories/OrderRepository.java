@@ -10,4 +10,6 @@ public interface OrderRepository {
 
     public Order addOrder(List<Product> products, int customerID);
     public List<Order> getAllOrders();
+
+    public Order getOrderById(Integer id);
 }

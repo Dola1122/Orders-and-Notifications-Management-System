@@ -29,4 +29,11 @@ public class InMemoryOrderRepository implements OrderRepository {
     }
 
 
+    public Order getOrderById(Integer id){
+        return orders.stream()
+                .filter(order -> order.getOrderID() == id)
+                .findFirst()
+                .orElse(null);
+    }
+
 }
