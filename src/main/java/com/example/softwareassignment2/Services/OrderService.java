@@ -3,10 +3,7 @@ package com.example.softwareassignment2.Services;
 
 import com.example.softwareassignment2.DTO.OrderRequest;
 import com.example.softwareassignment2.DTO.ProductRequest;
-import com.example.softwareassignment2.Models.Customer;
-import com.example.softwareassignment2.Models.NotificationType;
-import com.example.softwareassignment2.Models.Order;
-import com.example.softwareassignment2.Models.Product;
+import com.example.softwareassignment2.Models.*;
 import com.example.softwareassignment2.Repositories.CustomerRepository;
 import com.example.softwareassignment2.Repositories.InMemoryCustomerRepository;
 import com.example.softwareassignment2.Repositories.OrderRepository;
@@ -73,6 +70,25 @@ public class OrderService {
             return null;
         }
 
+    }
+
+
+    public Order placeCompoundOrder(List<Integer> simpleOrderIds){
+        List<SimpleOrder> simpleOrders = new ArrayList<>();
+
+        // get the simple order from their ids
+        for(Integer simpleOrderId : simpleOrderIds){
+            Order requestedOrder = orderRepository.getOrderById(simpleOrderId);
+            if(requestedOrder != null)
+                simpleOrders.add((SimpleOrder) requestedOrder);
+            else{
+                System.out.println("order with id " + simpleOrderId + "doesn't exist");
+                return null;
+            }
+        }
+
+        Order createdCompoundOrder = new CompoundOrder(simpleOrders);
+        return createdCompoundOrder;
     }
 
 
