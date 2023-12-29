@@ -8,6 +8,7 @@ import com.example.softwareassignment2.Models.NotificationType;
 import com.example.softwareassignment2.Models.Order;
 import com.example.softwareassignment2.Models.Product;
 import com.example.softwareassignment2.Repositories.CustomerRepository;
+import com.example.softwareassignment2.Repositories.InMemoryCustomerRepository;
 import com.example.softwareassignment2.Repositories.OrderRepository;
 import com.example.softwareassignment2.Services.NotificationHandlers.NotificationSystem;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,20 +51,39 @@ public class OrderService {
             }
         }
 
-        // make and order with sent products and customer id
-        Order createdOrder = orderRepository.addOrder(products, customerID);
+        if(validateCustomerBalance(customerID, totalOrderPrice)){
+            // make and order with sent products and customer id
+            Order createdOrder = orderRepository.addOrder(products, customerID);
 
-        createdOrder.setOrderPrice(totalOrderPrice);
+            createdOrder.setOrderPrice(totalOrderPrice);
 
-        List<String> placeHolders = new ArrayList<>();
-        Customer customer = customerRepository.getCustomerByID(customerID);
+            List<String> placeHolders = new ArrayList<>();
+            Customer customer = customerRepository.getCustomerByID(customerID);
 
-        placeHolders.add(customer.getUsername());
-        for(Product p : products){
-            placeHolders.add(p.getName());
+            placeHolders.add(customer.getUsername());
+            for(Product p : products){
+                placeHolders.add(p.getName());
+            }
+
+            notificationSystem.sendMessage(NotificationType.ORDER_PLACEMENT, placeHolders);
+            return createdOrder;
+
+        }else {
+            System.out.println("customer id is not valid or customer doesn't have enough balance");
+            return null;
         }
 
-        notificationSystem.sendMessage(NotificationType.ORDER_PLACEMENT, placeHolders);
-        return createdOrder;
+    }
+
+
+    public boolean validateCustomerBalance(int customerId, double totalPrice){
+        Customer customer = customerRepository.getCustomerByID(customerId);
+
+        if(customer != null && customer.getCustomerAccount().getAccountBalance() >= totalPrice){
+            customer.getCustomerAccount().setAccountBalance(customer.getCustomerAccount().getAccountBalance() - totalPrice);
+            return true;
+        }
+        else
+            return false;
     }
 }

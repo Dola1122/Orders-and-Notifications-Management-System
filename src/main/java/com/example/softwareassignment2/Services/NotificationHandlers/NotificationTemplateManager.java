@@ -2,10 +2,13 @@ package com.example.softwareassignment2.Services.NotificationHandlers;
 
 import com.example.softwareassignment2.Models.NotificationTemplate;
 import com.example.softwareassignment2.Models.NotificationType;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
 public class NotificationTemplateManager {
 
     private final Map<NotificationType, NotificationTemplateFactory> notificationCreators;
