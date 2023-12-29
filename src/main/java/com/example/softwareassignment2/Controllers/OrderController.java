@@ -26,8 +26,11 @@ public class OrderController {
             System.out.println(pr.getSerialNumber());
         }
         Order createdOrder = orderService.placeOrder(orderRequest);
-
-        orderDetails.put("orderDetails", createdOrder);
+        if(createdOrder != null){
+            orderDetails.put("orderDetails", createdOrder);
+        }else{
+            orderDetails.put("customer id is not valid or customer doesn't have enough balance" , null);
+        }
         return orderDetails;
     }
 
