@@ -14,6 +14,7 @@ import java.util.List;
 public class OrderRequest {
     private List<ProductRequest> products;
     private int customerID;
+    private String shippingAddress;
 
     // getters and setters
 }
