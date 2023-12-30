@@ -50,7 +50,7 @@ public class OrderService {
 
         if(validateCustomerBalance(customerID, totalOrderPrice)){
             // make and order with sent products and customer id
-            Order createdOrder = orderRepository.addOrder(products, customerID);
+            Order createdOrder = orderRepository.addOrder(products, customerID, orderRequest.getShippingAddress());
 
             createdOrder.setOrderPrice(totalOrderPrice);
 
@@ -87,7 +87,8 @@ public class OrderService {
             }
         }
 
-        Order createdCompoundOrder = new CompoundOrder(simpleOrders);
+        CompoundOrder createdCompoundOrder = new CompoundOrder(simpleOrders);
+        orderRepository.addCompoundOrder(createdCompoundOrder);
         return createdCompoundOrder;
     }
 
