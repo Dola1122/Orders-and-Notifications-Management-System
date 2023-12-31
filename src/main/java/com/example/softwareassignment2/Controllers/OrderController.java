@@ -1,6 +1,7 @@
 package com.example.softwareassignment2.Controllers;
 
 import com.example.softwareassignment2.DTO.OrderRequest;
+import com.example.softwareassignment2.DTO.OrderResponse;
 import com.example.softwareassignment2.DTO.ProductRequest;
 import com.example.softwareassignment2.Models.CompoundOrder;
 import com.example.softwareassignment2.Models.Order;
@@ -21,18 +22,12 @@ public class OrderController {
 
     // create new order (simple order)
     @PostMapping()
-    public HashMap<String, Order> placeOrder(@RequestBody OrderRequest orderRequest){
+    public OrderResponse placeOrder(@RequestBody OrderRequest orderRequest){
         HashMap<String, Order> orderDetails = new HashMap<>();
         for(ProductRequest pr : orderRequest.getProducts()){
             System.out.println(pr.getSerialNumber());
         }
-        Order createdOrder = orderService.placeOrder(orderRequest);
-        if(createdOrder != null){
-            orderDetails.put("orderDetails", createdOrder);
-        }else{
-            orderDetails.put("customer id is not valid or customer doesn't have enough balance or there arent enough quantity of product requested" , null);
-        }
-        return orderDetails;
+        return orderService.placeOrder(orderRequest);
     }
 
     // compound order controller

@@ -2,6 +2,7 @@ package com.example.softwareassignment2.Services;
 
 
 import com.example.softwareassignment2.DTO.OrderRequest;
+import com.example.softwareassignment2.DTO.OrderResponse;
 import com.example.softwareassignment2.DTO.ProductRequest;
 import com.example.softwareassignment2.Models.*;
 import com.example.softwareassignment2.Repositories.CustomerRepository;
@@ -32,7 +33,9 @@ public class OrderService {
         return orderRepository.getAllOrders();
     }
 
-    public Order placeOrder(OrderRequest orderRequest){
+    public OrderResponse placeOrder(OrderRequest orderRequest){
+        OrderResponse orderResponse = new OrderResponse();
+        orderResponse.setOrderDetails(null);
 
         int customerID = orderRequest.getCustomerID();
         List<Product> products = new ArrayList<>();
@@ -48,18 +51,28 @@ public class OrderService {
                 totalOrderPrice += product.getQuantity() * product.getPrice();
             }else {
                 System.out.println("Product doesn't exist");
+                orderResponse.setError("Product doesn't exist");
+                return orderResponse;
             }
         }
+        Customer user = checkIfUserExists(customerID);
+        if(user != null){
 
-        if(validateCustomerBalance(customerID, totalOrderPrice)){
+            if(!validateCustomerBalance(user, totalOrderPrice)){
+                System.out.println("customer doesn't have enough balance to place the order");
+                orderResponse.setError("customer doesn't have enough balance to place the order");
+                return orderResponse;
+            }
+
             // make and order with sent products and customer id
             Order createdOrder = orderRepository.addOrder(products, customerID, orderRequest.getShippingAddress());
 
             // reduce product quantity
             if(!productRepository.reduceProductsQuantity(products)){
                 // not enough quantity in the stock
-                System.out.println("Not enough quantity in the stock");
-                return null;
+                System.out.println("Not enough quantity in stock");
+                orderResponse.setError("Not enough quantity for the product ordered in stock");
+                return orderResponse;
             }
             createdOrder.setOrderPrice(totalOrderPrice);
 
@@ -70,13 +83,14 @@ public class OrderService {
             for(Product p : products){
                 placeHolders.add(p.getName());
             }
+            orderResponse.setOrderDetails(createdOrder);
 
             notificationSystem.sendMessage(NotificationType.ORDER_PLACEMENT, placeHolders, customer);
-            return createdOrder;
-
+            return orderResponse;
         }else {
-            System.out.println("customer id is not valid or customer doesn't have enough balance");
-            return null;
+            System.out.println("customer id is not valid customer doesn't exist");
+            orderResponse.setError("customer id is not valid customer doesn't exist");
+            return orderResponse;
         }
 
     }
@@ -102,8 +116,14 @@ public class OrderService {
     }
 
 
-    public boolean validateCustomerBalance(int customerId, double totalPrice){
+
+    private Customer checkIfUserExists(int customerId){
         Customer customer = customerRepository.getCustomerByID(customerId);
+        return customer; // null doesn't exist
+    }
+
+    private boolean validateCustomerBalance(Customer customer, double totalPrice){
+        // Customer customer = customerRepository.getCustomerByID(customerId);
 
         if(customer != null && customer.getCustomerAccount().getAccountBalance() >= totalPrice){
             customer.getCustomerAccount().setAccountBalance(customer.getCustomerAccount().getAccountBalance() - totalPrice);
