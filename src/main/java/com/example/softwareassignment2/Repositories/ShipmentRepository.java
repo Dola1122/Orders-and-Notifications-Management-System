@@ -11,7 +11,9 @@ public interface ShipmentRepository {
     public List<Shipment> getAllShipments();
 
 
+
     public Shipment getShipmentById(int id);
+    public boolean checkIfOrderHasBeenShipped(Order order);
 
     public void cancelShipment(Integer shipmentId);
 
