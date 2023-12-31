@@ -8,7 +8,9 @@ import lombok.*;
 @Getter
 public class Notification {
     private int notificationID;
+    private int customerID;
     private NotificationType notificationType;
     private String subject;
     private String actualContent;
+
 }

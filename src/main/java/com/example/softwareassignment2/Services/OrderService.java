@@ -62,7 +62,7 @@ public class OrderService {
                 placeHolders.add(p.getName());
             }
 
-            notificationSystem.sendMessage(NotificationType.ORDER_PLACEMENT, placeHolders);
+            notificationSystem.createMessage(NotificationType.ORDER_PLACEMENT, placeHolders, customer);
             return createdOrder;
 
         }else {
