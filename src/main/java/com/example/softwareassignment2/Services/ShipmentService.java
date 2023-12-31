@@ -1,7 +1,6 @@
 package com.example.softwareassignment2.Services;
 
 
-import com.example.softwareassignment2.DTO.ShipmentResponse;
 import com.example.softwareassignment2.Models.*;
 import com.example.softwareassignment2.Repositories.CustomerRepository;
 import com.example.softwareassignment2.Repositories.OrderRepository;
