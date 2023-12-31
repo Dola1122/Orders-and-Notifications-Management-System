@@ -41,11 +41,11 @@ public class InMemoryProductRepository implements ProductRepository {
     }
 
 
-    public boolean reduceProductsQuantity(List<Product> products){
-        for(Product product : products){
+    public boolean reduceProductsQuantity(List<Product> orderedProducts){
+        for(Product orderedProduct : orderedProducts){
             for(Product p: products){
-                if(Objects.equals(p.getSerialNumber(), product.getSerialNumber())){
-                    if(p.getQuantity() < product.getQuantity()){
+                if(p.getSerialNumber().equals(orderedProduct.getSerialNumber())){
+                    if(p.getQuantity() < orderedProduct.getQuantity()){
                         return false;
                     }
                 }
@@ -53,10 +53,10 @@ public class InMemoryProductRepository implements ProductRepository {
             }
         }
 
-        for(Product product : products){
+        for(Product orderedProduct : orderedProducts){
             for(Product p: products){
-                if(Objects.equals(p.getSerialNumber(), product.getSerialNumber())) {
-                    p.setQuantity(p.getQuantity() - product.getQuantity());
+                if(p.getSerialNumber().equals(orderedProduct.getSerialNumber())) {
+                    p.setQuantity(p.getQuantity() - orderedProduct.getQuantity());
                 }
             }
         }

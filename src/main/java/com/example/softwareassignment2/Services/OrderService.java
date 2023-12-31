@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class OrderService {
@@ -33,7 +34,7 @@ public class OrderService {
         return orderRepository.getAllOrders();
     }
 
-    public OrderResponse placeOrder(OrderRequest orderRequest){
+    public OrderResponse placeOrder(OrderRequest orderRequest) throws CloneNotSupportedException {
         OrderResponse orderResponse = new OrderResponse();
         orderResponse.setOrderDetails(null);
 
@@ -42,9 +43,10 @@ public class OrderService {
 
         double totalOrderPrice = 0;
         for (ProductRequest productRequest : orderRequest.getProducts()) {
-            Product product = productService.getProductBySerialNumber(productRequest.getSerialNumber());
+            Product product =  (Product) productService.getProductBySerialNumber(productRequest.getSerialNumber()).clone();
             if(product != null){
                 product.setQuantity(productRequest.getQuantity());
+                System.out.println("quantity = " + product.getQuantity());
                 System.out.println(product.getSerialNumber());
                 // product.setOrder(order);
                 products.add(product);

@@ -22,7 +22,7 @@ public class OrderController {
 
     // create new order (simple order)
     @PostMapping()
-    public OrderResponse placeOrder(@RequestBody OrderRequest orderRequest){
+    public OrderResponse placeOrder(@RequestBody OrderRequest orderRequest) throws CloneNotSupportedException {
         HashMap<String, Order> orderDetails = new HashMap<>();
         for(ProductRequest pr : orderRequest.getProducts()){
             System.out.println(pr.getSerialNumber());
