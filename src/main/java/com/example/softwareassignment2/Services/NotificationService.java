@@ -14,7 +14,6 @@ public class NotificationService {
     private NotificationRepository notificationRepository;
     @Autowired
     private SentNotifications sentNotifications;
-
     public Queue<Notification> getAllNotifications(){
         System.out.println(notificationRepository.getAllNotifications().size());
         return notificationRepository.getAllNotifications();

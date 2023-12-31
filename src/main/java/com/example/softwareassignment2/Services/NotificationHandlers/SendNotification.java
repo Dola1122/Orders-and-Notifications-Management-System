@@ -13,7 +13,7 @@ import java.util.Timer;
 
 import java.util.TimerTask;
 @Component
-public class SendNotification extends TimerTask {
+public class SendNotification{
     @Autowired
     private NotificationRepository notificationRepository;
     @Autowired
@@ -21,8 +21,8 @@ public class SendNotification extends TimerTask {
     @Autowired
     private SentNotifications sentNotifications;
 
-   @Override
-    public void run(){
+    @Scheduled(fixedRate = 60000) // 1 minute
+    public void processQueue() {
         System.out.println("Calling");
         if(notificationRepository.getAllNotifications().size() == 0){
             return;
@@ -31,7 +31,7 @@ public class SendNotification extends TimerTask {
         int id = notification.getCustomerID();
         Customer customer = customerRepository.getCustomerByID(id);
         sentNotifications.sendNotification(notification, customer);
-
     }
+
 
 }
