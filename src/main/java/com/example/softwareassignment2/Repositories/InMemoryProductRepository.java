@@ -1,6 +1,7 @@
 package com.example.softwareassignment2.Repositories;
 
 import com.example.softwareassignment2.Models.Product;
+import com.example.softwareassignment2.Models.Shipment;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
@@ -38,4 +39,28 @@ public class InMemoryProductRepository implements ProductRepository {
 
         return categoryCountMap;
     }
+
+
+    public boolean reduceProductsQuantity(List<Product> products){
+        for(Product product : products){
+            for(Product p: products){
+                if(Objects.equals(p.getSerialNumber(), product.getSerialNumber())){
+                    if(p.getQuantity() < product.getQuantity()){
+                        return false;
+                    }
+                }
+
+            }
+        }
+
+        for(Product product : products){
+            for(Product p: products){
+                if(Objects.equals(p.getSerialNumber(), product.getSerialNumber())) {
+                    p.setQuantity(p.getQuantity() - product.getQuantity());
+                }
+            }
+        }
+        return true;
+    }
+
 }

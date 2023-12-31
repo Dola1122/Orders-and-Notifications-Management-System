@@ -16,6 +16,8 @@ public interface ProductRepository {
 
     Product getProductBySerialNumber(String serialNumber);
 
+    public boolean reduceProductsQuantity(List<Product> products);
+
 }
 
 

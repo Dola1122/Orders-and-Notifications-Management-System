@@ -2,6 +2,7 @@ package com.example.softwareassignment2.Repositories;
 
 
 
+import com.example.softwareassignment2.Models.Product;
 import com.example.softwareassignment2.Models.Shipment;
 import org.springframework.stereotype.Repository;
 

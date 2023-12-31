@@ -30,7 +30,7 @@ public class OrderController {
         if(createdOrder != null){
             orderDetails.put("orderDetails", createdOrder);
         }else{
-            orderDetails.put("customer id is not valid or customer doesn't have enough balance" , null);
+            orderDetails.put("customer id is not valid or customer doesn't have enough balance or there arent enough quantity of product requested" , null);
         }
         return orderDetails;
     }

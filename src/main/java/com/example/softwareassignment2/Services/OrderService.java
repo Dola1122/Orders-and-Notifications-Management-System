@@ -7,6 +7,7 @@ import com.example.softwareassignment2.Models.*;
 import com.example.softwareassignment2.Repositories.CustomerRepository;
 import com.example.softwareassignment2.Repositories.InMemoryCustomerRepository;
 import com.example.softwareassignment2.Repositories.OrderRepository;
+import com.example.softwareassignment2.Repositories.ProductRepository;
 import com.example.softwareassignment2.Services.NotificationHandlers.NotificationSystem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,8 @@ public class OrderService {
     private CustomerRepository customerRepository;
     @Autowired
     private NotificationSystem notificationSystem;
+    @Autowired
+    private ProductRepository productRepository;
 
     public List<Order> getAllOrders(){
         return orderRepository.getAllOrders();
@@ -52,6 +55,12 @@ public class OrderService {
             // make and order with sent products and customer id
             Order createdOrder = orderRepository.addOrder(products, customerID, orderRequest.getShippingAddress());
 
+            // reduce product quantity
+            if(!productRepository.reduceProductsQuantity(products)){
+                // not enough quantity in the stock
+                System.out.println("Not enough quantity in the stock");
+                return null;
+            }
             createdOrder.setOrderPrice(totalOrderPrice);
 
             List<String> placeHolders = new ArrayList<>();
@@ -62,7 +71,7 @@ public class OrderService {
                 placeHolders.add(p.getName());
             }
 
-            notificationSystem.sendMessage(NotificationType.ORDER_PLACEMENT, placeHolders);
+            notificationSystem.sendMessage(NotificationType.ORDER_PLACEMENT, placeHolders, customer);
             return createdOrder;
 
         }else {

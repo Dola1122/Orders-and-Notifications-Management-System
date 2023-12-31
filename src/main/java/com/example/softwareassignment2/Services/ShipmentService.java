@@ -32,6 +32,7 @@ public class ShipmentService {
         if(order != null && reduceShippingFeesFromCustomers(order, shipment.getShipmentFees())){
             shipment.setOrder(order);
             shipment.setStatus(ShipmentStatus.PENDING);
+            shipmentRepository.addShipment(shipment);
             return shipment;
         }
         // else return null
