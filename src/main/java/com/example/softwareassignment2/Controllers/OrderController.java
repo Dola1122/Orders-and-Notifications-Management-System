@@ -23,7 +23,7 @@ public class OrderController {
 
     // create new order (simple order)
     @PostMapping()
-    public Map<String, Object> placeOrder(@RequestBody OrderRequest orderRequest) {
+    public Map<String, Object> placeOrder(@RequestBody OrderRequest orderRequest) throws CloneNotSupportedException {
         Map<String, Object> orderDetails = new HashMap<>();
 
         Order createdOrder = orderService.placeOrder(orderRequest);

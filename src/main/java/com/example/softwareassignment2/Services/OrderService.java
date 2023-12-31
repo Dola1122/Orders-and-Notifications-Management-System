@@ -34,14 +34,14 @@ public class OrderService {
         return orderRepository.getAllOrders();
     }
 
-    public Order placeOrder(OrderRequest orderRequest) {
+    public Order placeOrder(OrderRequest orderRequest) throws CloneNotSupportedException {
 
         int customerID = orderRequest.getCustomerID();
         List<Product> products = new ArrayList<>();
 
         double totalOrderPrice = 0;
         for (ProductRequest productRequest : orderRequest.getProducts()) {
-            Product product = productService.getProductBySerialNumber(productRequest.getSerialNumber());
+            Product product = (Product) productService.getProductBySerialNumber(productRequest.getSerialNumber()).clone();
             if (product != null) {
                 product.setQuantity(productRequest.getQuantity());
                 System.out.println(product.getSerialNumber());
