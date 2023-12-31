@@ -7,7 +7,13 @@ import com.example.softwareassignment2.Repositories.OrderRepository;
 import com.example.softwareassignment2.Repositories.ShipmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.example.softwareassignment2.Services.NotificationHandlers.NotificationSystem;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -90,6 +96,9 @@ public class ShipmentService {
     public void reduceShippingFeesFromCustomer(int customerId, double shipmentFees){
         Customer customer = customerRepository.getCustomerByID(customerId);
         customer.getCustomerAccount().setAccountBalance(customer.getCustomerAccount().getAccountBalance() - shipmentFees);
+        List<String> placeHolders = new ArrayList<>();
+        placeHolders.add(String.valueOf(orderId));
+        notificationSystem.createMessage(NotificationType.ORDER_SHIPMENT, placeHolders, customer);
     }
 
     private boolean checkIfUserHaveEnoughBalance(int customerId ,double shippingFees){

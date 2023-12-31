@@ -16,6 +16,6 @@ public class NotificationOrderShipmentTemplate extends NotificationTemplate {
         availableLanguages.add("Arabic");
         availableLanguages.add("English");
 
-        setContent("Dear {Customer Name}, your {Product Name} is on its way—thanks for choosing our store!");
+        setContent("Dear {Customer Name}, your order id : {OrderID} is on its way—thanks for choosing our store!");
     }
 }
