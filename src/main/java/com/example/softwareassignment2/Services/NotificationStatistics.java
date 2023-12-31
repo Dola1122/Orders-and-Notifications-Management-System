@@ -20,18 +20,20 @@ public class NotificationStatistics {
     @Autowired
     private CustomerRepository customerRepository;
 
-    public  List<String> mostNotifiedEmail(){
+    public List<String> mostNotifiedEmail() {
+        if (sentNotifications.getCustomerNotification() == null)
+            return null;
         Map<Integer, Queue<Notification>> customerNotifications = new HashMap<>();
         customerNotifications = sentNotifications.getCustomerNotification();
         int max = 0;
         List<Integer> customerID = new ArrayList<>();
         List<String> customerEmail = new ArrayList<>();
-        for (Map.Entry<Integer,Queue<Notification>> entry : customerNotifications.entrySet()){
-            if(max>entry.getValue().size())
+        for (Map.Entry<Integer, Queue<Notification>> entry : customerNotifications.entrySet()) {
+            if (max > entry.getValue().size())
                 continue;
             else {
-                if(max!=entry.getValue().size())customerID.clear();
-                max=entry.getValue().size();
+                if (max != entry.getValue().size()) customerID.clear();
+                max = entry.getValue().size();
                 customerID.add(entry.getKey());
             }
         }
@@ -44,7 +46,7 @@ public class NotificationStatistics {
         return customerEmail;
     }
 
-    public NotificationType mostNotificationTemplate(){
+    public NotificationType mostNotificationTemplate() {
         Map<NotificationType, Integer> typeCount = new HashMap<>();
 
         for (Notification notification : sentNotifications.getSentNotification()) {
@@ -63,7 +65,6 @@ public class NotificationStatistics {
         }
         return mostFrequentType;
     }
-
 
 
 }

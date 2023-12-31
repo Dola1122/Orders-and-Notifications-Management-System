@@ -23,7 +23,6 @@ public class SendNotification{
 
     @Scheduled(fixedRate = 60000) // 1 minute
     public void processQueue() {
-        System.out.println("Calling");
         if(notificationRepository.getAllNotifications().size() == 0){
             return;
         }

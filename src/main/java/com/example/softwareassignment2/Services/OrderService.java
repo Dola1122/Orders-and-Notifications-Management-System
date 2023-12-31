@@ -7,11 +7,14 @@ import com.example.softwareassignment2.Models.*;
 import com.example.softwareassignment2.Repositories.CustomerRepository;
 import com.example.softwareassignment2.Repositories.InMemoryCustomerRepository;
 import com.example.softwareassignment2.Repositories.OrderRepository;
+import com.example.softwareassignment2.Repositories.ProductRepository;
 import com.example.softwareassignment2.Services.NotificationHandlers.NotificationSystem;
 import com.example.softwareassignment2.Services.NotificationHandlers.SendNotification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,10 +33,6 @@ public class OrderService {
     private NotificationSystem notificationSystem;
     @Autowired
     private SendNotification sendNotification;
-    @Autowired
-    private CustomerRepository customerRepository;
-    @Autowired
-    private NotificationSystem notificationSystem;
     @Autowired
     private ProductRepository productRepository;
 
@@ -152,6 +151,10 @@ public class OrderService {
                 List<Product> products = ((SimpleOrder) order).getProducts();
 
                 productService.rollbackProductQuantities(products);
+
+                // add the price of the order to the customer balance
+                Customer customer = customerRepository.getCustomerByID(((SimpleOrder) order).getCustomerID());
+                customer.getCustomerAccount().setAccountBalance(customer.getCustomerAccount().getAccountBalance() + order.getOrderPrice());
 
                 // remove the order from the database
                 orderRepository.cancelOrder(orderId);

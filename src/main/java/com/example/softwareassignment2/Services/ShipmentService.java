@@ -28,6 +28,9 @@ public class ShipmentService {
     private OrderRepository orderRepository;
 
     @Autowired
+    private NotificationSystem notificationSystem;
+
+    @Autowired
     private CustomerRepository customerRepository;
 
 
@@ -39,69 +42,69 @@ public class ShipmentService {
 
 
         // if the order exist in the database make the shipment
-        if(order != null){
+        if (order != null) {
 
             // check if the order has been shipped already
 
-            if(shipmentRepository.checkIfOrderHasBeenShipped(order)){
+            if (shipmentRepository.checkIfOrderHasBeenShipped(order)) {
                 System.out.println("order has been shipped already");
                 shipmentResponse.put("Error", "order has been shipped already");
-                return  shipmentResponse;
+                return shipmentResponse;
             }
 
-            if(!reduceShippingFeesFromCustomers(order, shipment.getShipmentFees())){
-                shipmentResponse.put("Error" ,"customer doesn't have enough balance to pay the shipping fees");
-                return  shipmentResponse;
+            if (!reduceShippingFeesFromCustomers(order, shipment.getShipmentFees())) {
+                shipmentResponse.put("Error", "customer doesn't have enough balance to pay the shipping fees");
+                return shipmentResponse;
             }
             shipment.setOrder(order);
-            shipment.setStatus(ShipmentStatus.PENDING);
             shipmentRepository.addShipment(shipment);
-            shipmentResponse.put("shipmentDetails",shipment);
-        }
-        else{
-            shipmentResponse.put("Error","order id is not valid, order doesn't exist");
+            shipmentResponse.put("shipmentDetails", shipment);
+        } else {
+            shipmentResponse.put("Error", "order id is not valid, order doesn't exist");
         }
         return shipmentResponse;
     }
 
 
-    public boolean reduceShippingFeesFromCustomers(Order order, double shipmentFees){
+    public boolean reduceShippingFeesFromCustomers(Order order, double shipmentFees) {
 
-        if(order instanceof SimpleOrder){
+        if (order instanceof SimpleOrder) {
             System.out.println(((SimpleOrder) order).getCustomerID());
             int customerId = ((SimpleOrder) order).getCustomerID();
-            if(checkIfUserHaveEnoughBalance(customerId, shipmentFees)){
+            if (checkIfUserHaveEnoughBalance(customerId, shipmentFees)) {
                 reduceShippingFeesFromCustomer(customerId, shipmentFees);
-            }else {
+            } else {
                 return false;
             }
-        }else{
+        } else {
             // compound order
             // divide the fees among the customers
-            List<SimpleOrder> simpleOrders = ((CompoundOrder)order).getSimpleOrders();
+            List<SimpleOrder> simpleOrders = ((CompoundOrder) order).getSimpleOrders();
             double shipmentFeesDivided = shipmentFees / simpleOrders.size();
-            for(SimpleOrder simpleOrder : simpleOrders){
-                if(checkIfUserHaveEnoughBalance(simpleOrder.getCustomerID(), shipmentFeesDivided)){
+            for (SimpleOrder simpleOrder : simpleOrders) {
+                if (checkIfUserHaveEnoughBalance(simpleOrder.getCustomerID(), shipmentFeesDivided)) {
                     return false;
                 }
             }
             // if they all have enough balance reduce the shipping fees
-            for(SimpleOrder simpleOrder : simpleOrders){
+            for (SimpleOrder simpleOrder : simpleOrders) {
                 reduceShippingFeesFromCustomer(simpleOrder.getCustomerID(), shipmentFeesDivided);
+                List<String> placeHolders = new ArrayList<>();
+                placeHolders.add(String.valueOf(order.getOrderID()));
+                Customer customer = customerRepository.getCustomerByID(simpleOrder.getCustomerID());
+                notificationSystem.createMessage(NotificationType.ORDER_SHIPMENT, placeHolders, customer);
             }
         }
         return true;
     }
 
-    public void reduceShippingFeesFromCustomer(int customerId, double shipmentFees){
+    public void reduceShippingFeesFromCustomer(int customerId, double shipmentFees) {
         Customer customer = customerRepository.getCustomerByID(customerId);
         customer.getCustomerAccount().setAccountBalance(customer.getCustomerAccount().getAccountBalance() - shipmentFees);
-        List<String> placeHolders = new ArrayList<>();
-        placeHolders.add(String.valueOf(orderId));
-        notificationSystem.createMessage(NotificationType.ORDER_SHIPMENT, placeHolders, customer);
+
     }
 
-    private boolean checkIfUserHaveEnoughBalance(int customerId ,double shippingFees){
+    private boolean checkIfUserHaveEnoughBalance(int customerId, double shippingFees) {
         Customer customer = customerRepository.getCustomerByID(customerId);
         return customer.getCustomerAccount().getAccountBalance() >= shippingFees;
     }
@@ -119,6 +122,11 @@ public class ShipmentService {
             // Check if the shipment was created more than 1 hour ago
             if (hoursDifference <= 1) {
 
+
+                // add the price of the order to the customer balance
+                Customer customer = customerRepository.getCustomerByID(((SimpleOrder) shipment.getOrder()).getCustomerID());
+                customer.getCustomerAccount().setAccountBalance(customer.getCustomerAccount().getAccountBalance() + shipment.getShipmentFees());
+
                 // Remove the shipment from the database
                 shipmentRepository.cancelShipment(shipmentId);
 
@@ -132,6 +140,7 @@ public class ShipmentService {
     }
 
     public void removeAssociatedShipment(int orderId) {
+
         shipmentRepository.removeAssociatedShipment(orderId);
     }
 }

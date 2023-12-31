@@ -21,7 +21,6 @@ public class Shipment {
     private int  id;
 
     private Order order;
-    private ShipmentStatus status; // enum that indicates the status of the shipment (pending, delivered, cancelled)
 
     private double shipmentFees  = 25; // predefined
     private LocalDateTime shipmentTime;

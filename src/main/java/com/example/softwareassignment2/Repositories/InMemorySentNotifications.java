@@ -33,6 +33,9 @@ public class InMemorySentNotifications implements SentNotifications{
 
     @Override
     public Map<Integer, Queue<Notification>> getCustomerNotification() {
+        if(customerNotification.size() != 0){
+            return customerNotification;
+        }
         return null;
     }
 

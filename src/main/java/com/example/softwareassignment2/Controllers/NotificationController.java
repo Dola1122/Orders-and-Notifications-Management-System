@@ -7,6 +7,7 @@ import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -19,26 +20,27 @@ public class NotificationController {
     @Autowired
     private NotificationStatistics notificationStatistics;
 
-    @GetMapping("/allNotifications")
-    public Object listAllNotifications(){
-        if(notificationService.getAllNotifications() == null){
+    @GetMapping("/all-notifications")
+    public Object listAllNotifications() {
+        if (notificationService.getAllNotifications() == null) {
             return "No notifications created yet.";
         }
         return notificationService.getAllNotifications();
     }
 
-    @GetMapping("/EmailStatistics")
-    public List<String>getStatisticsEmail(){
+    @GetMapping("/email-statistics")
+    public List<String> getStatisticsEmail() {
         return notificationStatistics.mostNotifiedEmail();
     }
 
-    @GetMapping("/TemplateStatistics")
-    public NotificationType getStatisticsTemplate(){
+    @GetMapping("/template-statistics")
+    public NotificationType getStatisticsTemplate() {
         return notificationStatistics.mostNotificationTemplate();
     }
-    @GetMapping("/{customerID}")
-    public Object listCustomernotification(@PathParam("{customerID}")int customerID){
-        if(notificationService.getAllNotifications() == null){
+
+    @GetMapping
+    public Object listCustomerNotification(@RequestParam("customerID") int customerID) {
+        if (notificationService.getAllNotifications() == null) {
             return "No notifications created yet.";
         }
         return notificationService.getCustomerNotifications(customerID);
