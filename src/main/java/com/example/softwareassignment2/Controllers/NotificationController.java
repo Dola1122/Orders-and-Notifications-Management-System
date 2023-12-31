@@ -3,6 +3,7 @@ package com.example.softwareassignment2.Controllers;
 import com.example.softwareassignment2.Models.NotificationType;
 import com.example.softwareassignment2.Services.NotificationService;
 import com.example.softwareassignment2.Services.NotificationStatistics;
+import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ public class NotificationController {
     private NotificationService notificationService;
     @Autowired
     private NotificationStatistics notificationStatistics;
+
     @GetMapping("/allNotifications")
     public Object listAllNotifications(){
         if(notificationService.getAllNotifications() == null){
@@ -34,6 +36,12 @@ public class NotificationController {
     public NotificationType getStatisticsTemplate(){
         return notificationStatistics.mostNotificationTemplate();
     }
-
+    @GetMapping("/{customerID}")
+    public Object listCustomernotification(@PathParam("{customerID}")int customerID){
+        if(notificationService.getAllNotifications() == null){
+            return "No notifications created yet.";
+        }
+        return notificationService.getCustomerNotifications(customerID);
+    }
 
 }

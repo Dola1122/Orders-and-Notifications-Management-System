@@ -25,9 +25,6 @@ public class InMemoryNotificationRepository implements NotificationRepository {
 
     @Override
     public Queue<Notification> getAllNotifications() {
-        if(allNotifications.isEmpty()){
-            return null;
-        }
         return allNotifications;
     }
 

@@ -16,11 +16,13 @@ public class NotificationService {
     private SentNotifications sentNotifications;
 
     public Queue<Notification> getAllNotifications(){
+        System.out.println(notificationRepository.getAllNotifications().size());
         return notificationRepository.getAllNotifications();
     }
 
-//    public Queue<Notification> getCustomerNotifications(){
-//
-//    }
+    public Queue<Notification> getCustomerNotifications(int customerId){
+
+        return sentNotifications.getCustomerNotifications(customerId);
+    }
 
 }

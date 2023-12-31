@@ -9,8 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.Timer;
+
+import java.util.TimerTask;
 @Component
-public class SendNotification {
+public class SendNotification extends TimerTask {
     @Autowired
     private NotificationRepository notificationRepository;
     @Autowired
@@ -18,10 +21,10 @@ public class SendNotification {
     @Autowired
     private SentNotifications sentNotifications;
 
-
-    @Scheduled(fixedRate = 60000)
-    public void sendNotification(){
-        if(notificationRepository.getAllNotifications() == null){
+   @Override
+    public void run(){
+        System.out.println("Calling");
+        if(notificationRepository.getAllNotifications().size() == 0){
             return;
         }
         Notification notification = notificationRepository.getAllNotifications().poll();

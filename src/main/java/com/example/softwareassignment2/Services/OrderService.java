@@ -8,6 +8,7 @@ import com.example.softwareassignment2.Repositories.CustomerRepository;
 import com.example.softwareassignment2.Repositories.InMemoryCustomerRepository;
 import com.example.softwareassignment2.Repositories.OrderRepository;
 import com.example.softwareassignment2.Services.NotificationHandlers.NotificationSystem;
+import com.example.softwareassignment2.Services.NotificationHandlers.SendNotification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,8 @@ public class OrderService {
     private CustomerRepository customerRepository;
     @Autowired
     private NotificationSystem notificationSystem;
+    @Autowired
+    private SendNotification sendNotification;
 
     public List<Order> getAllOrders(){
         return orderRepository.getAllOrders();
@@ -57,12 +60,13 @@ public class OrderService {
             List<String> placeHolders = new ArrayList<>();
             Customer customer = customerRepository.getCustomerByID(customerID);
 
-            placeHolders.add(customer.getUsername());
+
             for(Product p : products){
                 placeHolders.add(p.getName());
             }
 
             notificationSystem.createMessage(NotificationType.ORDER_PLACEMENT, placeHolders, customer);
+
             return createdOrder;
 
         }else {
@@ -77,7 +81,7 @@ public class OrderService {
         List<SimpleOrder> simpleOrders = new ArrayList<>();
 
         // get the simple order from their ids
-        for(Integer simpleOrderId : simpleOrderIds){
+        for(int simpleOrderId : simpleOrderIds){
             Order requestedOrder = orderRepository.getOrderById(simpleOrderId);
             if(requestedOrder != null)
                 simpleOrders.add((SimpleOrder) requestedOrder);
@@ -85,6 +89,23 @@ public class OrderService {
                 System.out.println("order with id " + simpleOrderId + "doesn't exist");
                 return null;
             }
+
+            List<String> placeHolders = new ArrayList<>();
+            SimpleOrder order=simpleOrders.get(simpleOrderId-1);
+
+            int id=order.getCustomerID();
+            System.out.println(id);
+
+            Customer customer = customerRepository.getCustomerByID(id);
+            System.out.println(customer.getUsername());
+
+            for(Product p : simpleOrders.get(simpleOrderId-1).getProducts()){
+                placeHolders.add(p.getName());
+            }
+
+            notificationSystem.createMessage(NotificationType.ORDER_PLACEMENT, placeHolders, customer);
+
+
         }
 
         CompoundOrder createdCompoundOrder = new CompoundOrder(simpleOrders);

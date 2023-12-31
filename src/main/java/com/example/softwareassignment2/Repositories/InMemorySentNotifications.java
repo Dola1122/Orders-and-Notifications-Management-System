@@ -2,9 +2,10 @@ package com.example.softwareassignment2.Repositories;
 
 import com.example.softwareassignment2.Models.Customer;
 import com.example.softwareassignment2.Models.Notification;
+import org.springframework.stereotype.Repository;
 
 import java.util.*;
-
+@Repository
 public class InMemorySentNotifications implements SentNotifications{
     private final List<Notification> allSentNotifications = new ArrayList<>();
     private final Map<Integer, Queue<Notification>> customerNotification = new HashMap<>();

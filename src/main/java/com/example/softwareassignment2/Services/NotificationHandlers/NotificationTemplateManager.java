@@ -11,6 +11,8 @@ import java.util.Map;
 @Component
 public class NotificationTemplateManager {
 
+
+
     private final Map<NotificationType, NotificationTemplateFactory> notificationCreators;
 
     public NotificationTemplateManager() {
@@ -21,5 +23,8 @@ public class NotificationTemplateManager {
 
     public NotificationTemplate createTemplate(NotificationType type) {
         return notificationCreators.get(type).createTemplate();
+    }
+    public NotificationTemplateFactory getFactory(NotificationType notificationType){
+        return notificationCreators.get(notificationType);
     }
 }

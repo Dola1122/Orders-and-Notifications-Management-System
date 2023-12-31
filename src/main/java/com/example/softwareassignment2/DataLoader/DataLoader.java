@@ -6,12 +6,15 @@ import com.example.softwareassignment2.Models.Product;
 import com.example.softwareassignment2.Repositories.CustomerRepository;
 import com.example.softwareassignment2.Repositories.ProductRepository;
 import com.example.softwareassignment2.Services.NotificationHandlers.NotificationTemplateManager;
+import com.example.softwareassignment2.Services.NotificationHandlers.SendNotification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import java.util.Timer;
 
 
 @Component
@@ -22,6 +25,9 @@ public class DataLoader implements ApplicationRunner {
     private NotificationTemplateManager notificationTemplateManager;
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private SendNotification sendNotification;
+
     @Override
     public void run(ApplicationArguments args) {
         // Add some dummy products to the in-memory database

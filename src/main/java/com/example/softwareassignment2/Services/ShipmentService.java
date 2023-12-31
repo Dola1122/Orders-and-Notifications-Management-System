@@ -5,9 +5,11 @@ import com.example.softwareassignment2.Models.*;
 import com.example.softwareassignment2.Repositories.CustomerRepository;
 import com.example.softwareassignment2.Repositories.OrderRepository;
 import com.example.softwareassignment2.Repositories.ShipmentRepository;
+import com.example.softwareassignment2.Services.NotificationHandlers.NotificationSystem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -19,25 +21,35 @@ public class ShipmentService {
 
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private NotificationSystem notificationSystem;
+
+    private int orderId;
+
 
 
     public Shipment createShipment(int orderId) {
 
         Order order = orderRepository.getOrderById(orderId);
-
         Shipment shipment = new Shipment();
-
+        this.orderId=orderId;
 
         // if the order exist in the database make the shipment
         if(order != null && reduceShippingFeesFromCustomers(order, shipment.getShipmentFees())){
             shipment.setOrder(order);
             shipment.setStatus(ShipmentStatus.PENDING);
+
+
+
             return shipment;
         }
         // else return null
         else{
             return null;
         }
+
+
+
     }
 
 
@@ -49,6 +61,8 @@ public class ShipmentService {
             if(!reduceShippingFeesFromCustomer(customerId, shipmentFees))
                 return false;
         }else{
+
+
             // compound order
             // divide the fees among the customers
             List<SimpleOrder> simpleOrders = ((CompoundOrder)order).getSimpleOrders();
@@ -67,7 +81,11 @@ public class ShipmentService {
         Customer customer = customerRepository.getCustomerByID(customerId);
 
         if(customer.getCustomerAccount().getAccountBalance() >= shipmentFees){
+
             customer.getCustomerAccount().setAccountBalance(customer.getCustomerAccount().getAccountBalance() - shipmentFees);
+            List<String> placeHolders = new ArrayList<>();
+            placeHolders.add(String.valueOf(orderId));
+            notificationSystem.createMessage(NotificationType.ORDER_SHIPMENT, placeHolders, customer);
             return true;
         }else {
             return false;
