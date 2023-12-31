@@ -13,4 +13,5 @@ public interface ShipmentRepository {
 
 
     public Shipment getShipmentById(int id);
+    public boolean checkIfOrderHasBeenShipped(Order order);
 }

@@ -1,7 +1,6 @@
 package com.example.softwareassignment2.Services;
 
 
-import com.example.softwareassignment2.DTO.ShipmentResponse;
 import com.example.softwareassignment2.Models.*;
 import com.example.softwareassignment2.Repositories.CustomerRepository;
 import com.example.softwareassignment2.Repositories.OrderRepository;
@@ -9,7 +8,9 @@ import com.example.softwareassignment2.Repositories.ShipmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ShipmentService {
@@ -22,9 +23,8 @@ public class ShipmentService {
     private CustomerRepository customerRepository;
 
 
-    public ShipmentResponse createShipment(int orderId) {
-        ShipmentResponse shipmentResponse = new ShipmentResponse();
-        shipmentResponse.setShipmentDetails(null);
+    public Map<String, Object> createShipment(int orderId) {
+        Map<String, Object> shipmentResponse = new HashMap<>();
         Order order = orderRepository.getOrderById(orderId);
 
         Shipment shipment = new Shipment();
@@ -32,17 +32,26 @@ public class ShipmentService {
 
         // if the order exist in the database make the shipment
         if(order != null){
+
+            // check if the order has been shipped already
+
+            if(shipmentRepository.checkIfOrderHasBeenShipped(order)){
+                System.out.println("order has been shipped already");
+                shipmentResponse.put("Error", "order has been shipped already");
+                return  shipmentResponse;
+            }
+
             if(!reduceShippingFeesFromCustomers(order, shipment.getShipmentFees())){
-                shipmentResponse.setError("customer doesn't have enough balance to pay the shipping fees");
+                shipmentResponse.put("Error" ,"customer doesn't have enough balance to pay the shipping fees");
                 return  shipmentResponse;
             }
             shipment.setOrder(order);
             shipment.setStatus(ShipmentStatus.PENDING);
             shipmentRepository.addShipment(shipment);
-            shipmentResponse.setShipmentDetails(shipment);
+            shipmentResponse.put("shipmentDetails",shipment);
         }
         else{
-            shipmentResponse.setError("order id is not valid, order doesn't exist");
+            shipmentResponse.put("Error","order id is not valid, order doesn't exist");
         }
         return shipmentResponse;
     }
