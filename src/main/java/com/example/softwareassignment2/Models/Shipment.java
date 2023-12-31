@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
@@ -23,4 +24,6 @@ public class Shipment {
     private ShipmentStatus status; // enum that indicates the status of the shipment (pending, delivered, cancelled)
 
     private double shipmentFees  = 25; // predefined
+    private LocalDateTime shipmentTime;
+
 }

@@ -11,6 +11,10 @@ public interface ShipmentRepository {
     public List<Shipment> getAllShipments();
 
 
-
     public Shipment getShipmentById(int id);
+
+    public void cancelShipment(Integer shipmentId);
+
+    public void removeAssociatedShipment(Integer orderId);
+
 }

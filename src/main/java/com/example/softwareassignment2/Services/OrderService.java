@@ -22,6 +22,8 @@ public class OrderService {
     @Autowired
     private ProductService productService;
     @Autowired
+    private ShipmentService shipmentService;
+    @Autowired
     private OrderRepository orderRepository;
     @Autowired
     private CustomerRepository customerRepository;
@@ -132,6 +134,9 @@ public class OrderService {
                 // remove the order from the database
                 orderRepository.cancelOrder(orderId);
 
+                // if there was a shipment for that order remove it
+                removeAssociatedShipment(orderId);
+
                 return true;
             }
             return false;
@@ -139,6 +144,10 @@ public class OrderService {
             System.out.println("Order with ID " + orderId + " doesn't exist");
             return false;
         }
+    }
+
+    private void removeAssociatedShipment(int orderId) {
+        shipmentService.removeAssociatedShipment(orderId);
     }
 }
 
