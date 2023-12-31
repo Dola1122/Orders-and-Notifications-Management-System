@@ -42,6 +42,7 @@ public class InMemoryOrderRepository implements OrderRepository {
 
     public void addCompoundOrder(CompoundOrder compoundOrder) {
         compoundOrder.setOrderID(orders.size() + 1);
+        compoundOrder.setOrderTime(LocalDateTime.now());
         orders.add(compoundOrder);
     }
 

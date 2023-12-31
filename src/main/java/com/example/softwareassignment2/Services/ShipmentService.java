@@ -69,30 +69,37 @@ public class ShipmentService {
     public boolean reduceShippingFeesFromCustomers(Order order, double shipmentFees) {
 
         if (order instanceof SimpleOrder) {
-            System.out.println(((SimpleOrder) order).getCustomerID());
             int customerId = ((SimpleOrder) order).getCustomerID();
             if (checkIfUserHaveEnoughBalance(customerId, shipmentFees)) {
                 reduceShippingFeesFromCustomer(customerId, shipmentFees);
             } else {
                 return false;
             }
-        } else {
+        } else if (order instanceof CompoundOrder) {
             // compound order
             // divide the fees among the customers
             List<SimpleOrder> simpleOrders = ((CompoundOrder) order).getSimpleOrders();
             double shipmentFeesDivided = shipmentFees / simpleOrders.size();
+            boolean allCustomersHaveEnoughBalance = true;
+
             for (SimpleOrder simpleOrder : simpleOrders) {
-                if (checkIfUserHaveEnoughBalance(simpleOrder.getCustomerID(), shipmentFeesDivided)) {
-                    return false;
+                if (!checkIfUserHaveEnoughBalance(simpleOrder.getCustomerID(), shipmentFeesDivided)) {
+                    allCustomersHaveEnoughBalance = false;
+                    break;  // Break if any customer doesn't have enough balance
                 }
             }
-            // if they all have enough balance reduce the shipping fees
-            for (SimpleOrder simpleOrder : simpleOrders) {
-                reduceShippingFeesFromCustomer(simpleOrder.getCustomerID(), shipmentFeesDivided);
-                List<String> placeHolders = new ArrayList<>();
-                placeHolders.add(String.valueOf(order.getOrderID()));
-                Customer customer = customerRepository.getCustomerByID(simpleOrder.getCustomerID());
-                notificationSystem.createMessage(NotificationType.ORDER_SHIPMENT, placeHolders, customer);
+
+            if (allCustomersHaveEnoughBalance) {
+                // If all customers have enough balance, reduce the shipping fees
+                for (SimpleOrder simpleOrder : simpleOrders) {
+                    reduceShippingFeesFromCustomer(simpleOrder.getCustomerID(), shipmentFeesDivided);
+                    List<String> placeHolders = new ArrayList<>();
+                    placeHolders.add(String.valueOf(order.getOrderID()));
+                    Customer customer = customerRepository.getCustomerByID(simpleOrder.getCustomerID());
+                    notificationSystem.createMessage(NotificationType.ORDER_SHIPMENT, placeHolders, customer);
+                }
+            } else {
+                return false;  // Return false if any customer doesn't have enough balance
             }
         }
         return true;
@@ -119,16 +126,20 @@ public class ShipmentService {
             // Calculate the time difference in hours
             long hoursDifference = Duration.between(shipmentTime, currentTime).toHours();
 
-            // Check if the shipment was created more than 1 hour ago
+            // Check if the shipment was created less than 1 hour ago
             if (hoursDifference <= 1) {
+                Order order = shipment.getOrder();
 
-
-                // add the price of the order to the customer balance
-                Customer customer = customerRepository.getCustomerByID(((SimpleOrder) shipment.getOrder()).getCustomerID());
-                customer.getCustomerAccount().setAccountBalance(customer.getCustomerAccount().getAccountBalance() + shipment.getShipmentFees());
-
-                // Remove the shipment from the database
-                shipmentRepository.cancelShipment(shipmentId);
+                if (order instanceof SimpleOrder) {
+                    // For a SimpleOrder
+                    cancelSimpleOrderShipment((SimpleOrder) order, shipmentId);
+                } else if (order instanceof CompoundOrder) {
+                    // For a CompoundOrder, cancel shipment for each SimpleOrder within it
+                    List<SimpleOrder> simpleOrders = ((CompoundOrder) order).getSimpleOrders();
+                    for (SimpleOrder simpleOrder : simpleOrders) {
+                        cancelSimpleOrderShipment(simpleOrder, shipmentId);
+                    }
+                }
 
                 return true;
             }
@@ -137,6 +148,16 @@ public class ShipmentService {
             System.out.println("Shipment with ID " + shipmentId + " doesn't exist");
             return false;
         }
+    }
+
+    private void cancelSimpleOrderShipment(SimpleOrder simpleOrder, int shipmentId) {
+        // add the price of the shipment to the customer balance
+        Customer customer = customerRepository.getCustomerByID(simpleOrder.getCustomerID());
+        customer.getCustomerAccount().setAccountBalance(
+                customer.getCustomerAccount().getAccountBalance() + shipmentRepository.getShipmentById(shipmentId).getShipmentFees());
+
+        // Remove the shipment from the database
+        shipmentRepository.cancelShipment(shipmentId);
     }
 
     public void removeAssociatedShipment(int orderId) {

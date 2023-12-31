@@ -35,7 +35,7 @@ public class DataLoader implements ApplicationRunner {
         repository.addProduct(new Product("SN002", "Product2", "Vendor2", "Category1", 75.0, 20));
         repository.addProduct(new Product("SN003", "Product3", "Vendor3", "Category2", 30.0, 15));
         customerRepository.addCustomer(new Customer(1, new CustomerAccount(500), "mohamedHesham", "77788", "011","mo@gmail.com","giza"));
-        customerRepository.addCustomer(new Customer(2, new CustomerAccount(500), "ahmedHesham", "77788", "011","ah@gmail.com","giza"));
+        customerRepository.addCustomer(new Customer(2, new CustomerAccount(1500), "ahmedHesham", "77788", "011","ah@gmail.com","giza"));
         notificationTemplateManager = new NotificationTemplateManager();
     }
 }

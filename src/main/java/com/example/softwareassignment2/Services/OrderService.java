@@ -36,7 +36,7 @@ public class OrderService {
     @Autowired
     private ProductRepository productRepository;
 
-    public List<Order> getAllOrders(){
+    public List<Order> getAllOrders() {
         return orderRepository.getAllOrders();
     }
 
@@ -104,15 +104,15 @@ public class OrderService {
             }
 
             List<String> placeHolders = new ArrayList<>();
-            SimpleOrder order=simpleOrders.get(simpleOrderId-1);
+            SimpleOrder order = simpleOrders.get(simpleOrderId - 1);
 
-            int id=order.getCustomerID();
+            int id = order.getCustomerID();
             System.out.println(id);
 
             Customer customer = customerRepository.getCustomerByID(id);
             System.out.println(customer.getUsername());
 
-            for(Product p : simpleOrders.get(simpleOrderId-1).getProducts()){
+            for (Product p : simpleOrders.get(simpleOrderId - 1).getProducts()) {
                 placeHolders.add(p.getName());
             }
 
@@ -139,6 +139,7 @@ public class OrderService {
 
     public boolean cancelOrder(int orderId) {
         Order order = orderRepository.getOrderById(orderId);
+
         if (order != null) {
             LocalDateTime orderTime = order.getOrderTime();
             LocalDateTime currentTime = LocalDateTime.now();
@@ -148,27 +149,42 @@ public class OrderService {
 
             // Check if the order was created more than 1 hour ago
             if (hoursDifference <= 1) {
-                List<Product> products = ((SimpleOrder) order).getProducts();
+                if (order instanceof SimpleOrder) {
+                    // For a SimpleOrder
+                    cancelSimpleOrder((SimpleOrder) order);
+                } else if (order instanceof CompoundOrder) {
+                    // For a CompoundOrder, cancel each SimpleOrder within it
+                    List<SimpleOrder> simpleOrders = ((CompoundOrder) order).getSimpleOrders();
+                    for (SimpleOrder simpleOrder : simpleOrders) {
+                        cancelSimpleOrder(simpleOrder);
+                    }
+                    orderRepository.cancelOrder(order.getOrderID());
 
-                productService.rollbackProductQuantities(products);
-
-                // add the price of the order to the customer balance
-                Customer customer = customerRepository.getCustomerByID(((SimpleOrder) order).getCustomerID());
-                customer.getCustomerAccount().setAccountBalance(customer.getCustomerAccount().getAccountBalance() + order.getOrderPrice());
-
-                // remove the order from the database
-                orderRepository.cancelOrder(orderId);
-
-                // if there was a shipment for that order remove it
-                removeAssociatedShipment(orderId);
+                }
 
                 return true;
             }
+
             return false;
         } else {
             System.out.println("Order with ID " + orderId + " doesn't exist");
             return false;
         }
+    }
+
+    private void cancelSimpleOrder(SimpleOrder simpleOrder) {
+        List<Product> products = simpleOrder.getProducts();
+
+        productService.rollbackProductQuantities(products);
+
+        Customer customer = customerRepository.getCustomerByID(simpleOrder.getCustomerID());
+        customer.getCustomerAccount().setAccountBalance(
+                customer.getCustomerAccount().getAccountBalance() + simpleOrder.getOrderPrice());
+
+        orderRepository.cancelOrder(simpleOrder.getOrderID());
+
+        // if there was a shipment for that order remove it
+        removeAssociatedShipment(simpleOrder.getOrderID());
     }
 
     private void removeAssociatedShipment(int orderId) {
