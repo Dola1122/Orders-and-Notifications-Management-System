@@ -34,8 +34,9 @@ public class NotificationSystem {
         return notification;
     }
 
-    public void sendMessage(NotificationType type, List<String> placeHolders){
+    public void sendMessage(NotificationType type, List<String> placeHolders,Customer customer){
+        placeHolders.add(0, customer.getUsername());
         Notification notification = createMessage(type, placeHolders);
-        notificationRepository.saveNotification(notification);
+        notificationRepository.saveNotification(notification,customer);
     }
 }
