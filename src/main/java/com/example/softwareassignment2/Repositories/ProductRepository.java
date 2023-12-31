@@ -18,6 +18,8 @@ public interface ProductRepository {
 
     public boolean reduceProductsQuantity(List<Product> products);
 
+    public void rollbackProductQuantities(List<Product> products);
+
 }
 
 

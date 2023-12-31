@@ -1,6 +1,7 @@
 package com.example.softwareassignment2.Models;
 
 import lombok.*;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -11,5 +12,5 @@ public abstract class Order {
 
     private double orderPrice;
 
-
+    private LocalDateTime orderTime;
 }

@@ -63,4 +63,16 @@ public class InMemoryProductRepository implements ProductRepository {
         return true;
     }
 
+    public void rollbackProductQuantities(List<Product> productsToRollback) {
+        for (Product productToRollback : productsToRollback) {
+            for (Product originalProduct : products) {
+                if (Objects.equals(originalProduct.getSerialNumber(), productToRollback.getSerialNumber())) {
+                    // Rollback quantity to the original value
+                    originalProduct.setQuantity(originalProduct.getQuantity() + productToRollback.getQuantity());
+                    break; // Break the inner loop once the product is found
+                }
+            }
+        }
+    }
+
 }

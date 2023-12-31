@@ -28,5 +28,9 @@ public class ProductService {
         Product p = repository.getProductBySerialNumber(serialNumber);
         return p;
     }
+
+    public void rollbackProductQuantities(List<Product> products) {
+        repository.rollbackProductQuantities(products);
+    }
 }
 

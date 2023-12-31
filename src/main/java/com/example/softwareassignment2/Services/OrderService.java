@@ -12,6 +12,8 @@ import com.example.softwareassignment2.Services.NotificationHandlers.Notificatio
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,11 +30,11 @@ public class OrderService {
     @Autowired
     private ProductRepository productRepository;
 
-    public List<Order> getAllOrders(){
+    public List<Order> getAllOrders() {
         return orderRepository.getAllOrders();
     }
 
-    public Order placeOrder(OrderRequest orderRequest){
+    public Order placeOrder(OrderRequest orderRequest) {
 
         int customerID = orderRequest.getCustomerID();
         List<Product> products = new ArrayList<>();
@@ -40,23 +42,23 @@ public class OrderService {
         double totalOrderPrice = 0;
         for (ProductRequest productRequest : orderRequest.getProducts()) {
             Product product = productService.getProductBySerialNumber(productRequest.getSerialNumber());
-            if(product != null){
+            if (product != null) {
                 product.setQuantity(productRequest.getQuantity());
                 System.out.println(product.getSerialNumber());
                 // product.setOrder(order);
                 products.add(product);
                 totalOrderPrice += product.getQuantity() * product.getPrice();
-            }else {
+            } else {
                 System.out.println("Product doesn't exist");
             }
         }
 
-        if(validateCustomerBalance(customerID, totalOrderPrice)){
+        if (validateCustomerBalance(customerID, totalOrderPrice)) {
             // make and order with sent products and customer id
             Order createdOrder = orderRepository.addOrder(products, customerID, orderRequest.getShippingAddress());
 
             // reduce product quantity
-            if(!productRepository.reduceProductsQuantity(products)){
+            if (!productRepository.reduceProductsQuantity(products)) {
                 // not enough quantity in the stock
                 System.out.println("Not enough quantity in the stock");
                 return null;
@@ -67,14 +69,14 @@ public class OrderService {
             Customer customer = customerRepository.getCustomerByID(customerID);
 
             placeHolders.add(customer.getUsername());
-            for(Product p : products){
+            for (Product p : products) {
                 placeHolders.add(p.getName());
             }
 
             notificationSystem.sendMessage(NotificationType.ORDER_PLACEMENT, placeHolders, customer);
             return createdOrder;
 
-        }else {
+        } else {
             System.out.println("customer id is not valid or customer doesn't have enough balance");
             return null;
         }
@@ -82,15 +84,15 @@ public class OrderService {
     }
 
 
-    public Order placeCompoundOrder(List<Integer> simpleOrderIds){
+    public Order placeCompoundOrder(List<Integer> simpleOrderIds) {
         List<SimpleOrder> simpleOrders = new ArrayList<>();
 
         // get the simple order from their ids
-        for(Integer simpleOrderId : simpleOrderIds){
+        for (Integer simpleOrderId : simpleOrderIds) {
             Order requestedOrder = orderRepository.getOrderById(simpleOrderId);
-            if(requestedOrder != null)
+            if (requestedOrder != null)
                 simpleOrders.add((SimpleOrder) requestedOrder);
-            else{
+            else {
                 System.out.println("order with id " + simpleOrderId + "doesn't exist");
                 return null;
             }
@@ -102,14 +104,42 @@ public class OrderService {
     }
 
 
-    public boolean validateCustomerBalance(int customerId, double totalPrice){
+    public boolean validateCustomerBalance(int customerId, double totalPrice) {
         Customer customer = customerRepository.getCustomerByID(customerId);
 
-        if(customer != null && customer.getCustomerAccount().getAccountBalance() >= totalPrice){
+        if (customer != null && customer.getCustomerAccount().getAccountBalance() >= totalPrice) {
             customer.getCustomerAccount().setAccountBalance(customer.getCustomerAccount().getAccountBalance() - totalPrice);
             return true;
-        }
-        else
+        } else
             return false;
     }
+
+    public boolean cancelOrder(int orderId) {
+        Order order = orderRepository.getOrderById(orderId);
+        if (order != null) {
+            LocalDateTime orderTime = order.getOrderTime();
+            LocalDateTime currentTime = LocalDateTime.now();
+
+            // Calculate the time difference in hours
+            long hoursDifference = Duration.between(orderTime, currentTime).toHours();
+
+            // Check if the order was created more than 1 hour ago
+            if (hoursDifference <= 1) {
+                List<Product> products = ((SimpleOrder) order).getProducts();
+
+                productService.rollbackProductQuantities(products);
+
+                // remove the order from the database
+                orderRepository.cancelOrder(orderId);
+
+                return true;
+            }
+            return false;
+        } else {
+            System.out.println("Order with ID " + orderId + " doesn't exist");
+            return false;
+        }
+    }
 }
+
+

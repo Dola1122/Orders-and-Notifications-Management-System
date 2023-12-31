@@ -14,4 +14,7 @@ public interface OrderRepository {
 
     public Order getOrderById(Integer id);
     public void addCompoundOrder(CompoundOrder compoundOrder);
+
+    // bonus cancel order
+    public void cancelOrder(Integer orderId);
 }
